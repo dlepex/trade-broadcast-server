@@ -32,21 +32,20 @@ class DownstreamServer(bossPool: EventLoopGroup,
 
   def start(): Unit = {
     // todo check start once
-    val b = new ServerBootstrap();
+    val b = new ServerBootstrap()
+
     b.group(bossPool, workerPool)
       .channel(classOf[NioServerSocketChannel])
-      //.option(ChannelOption.SO_BACKLOG, 100)
       .childHandler(new ChannelInitializer[NioSocketChannel]() {
-      @Override
-      def initChannel(ch: NioSocketChannel): Unit = {
-        val p = ch.pipeline()
-        p.addLast(new DownstreamServer.Handler(actorRef))
-        p.addLast(new DownstreamServer.JsonEncoder())
-      }
-    })
+        override def initChannel(ch: NioSocketChannel): Unit = {
+          val p = ch.pipeline()
+          p.addLast(new DownstreamServer.Handler(actorRef))
+          p.addLast(new DownstreamServer.JsonEncoder())
+        }
+      })
 
     val ch = b.bind(port).sync().channel()
-    logger.debug(s"DownstreamServer started on port=$port")
+    logger.debug(s"DownstreamServer started on port=$port $ch")
   }
 
 
