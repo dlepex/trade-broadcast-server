@@ -87,7 +87,7 @@ object DownstreamServer {
       case Connect(chan) ⇒
         log.debug(s"connect chan $chan")
         channels += chan
-        chan.writeAndFlush(history.values.view.flatten)
+        chan.writeAndFlush(history.values.toList.view.flatten)
       case Disconnect(chan) ⇒
         log.debug(s"discon chan $chan")
         channels -= chan // todo optimize O(n)
